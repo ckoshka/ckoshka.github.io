@@ -1,0 +1,494 @@
+<html>
+
+<head>
+    <!--Standard boilerplate, plus jquery-->
+    <meta charset="utf-8">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet"
+      href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/styles/atom-one-dark.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.4.0/highlight.min.js"></script>
+</head>
+
+<body>
+    <div class="header-container">
+        <!--This is designed to be similar to Bandcamp's logo, with a solid font and an outlined shadow-->
+        <div class="header-text">
+            <h1>
+                Personator Config Generator
+            </h1>
+        </div>
+        <div class="circle" id="1c"></div>
+        <div class="circle" id="2c"></div>
+        <div class="circle" id="3c"></div>
+        <div class="circle" id="3c"></div>
+    </div>
+    <div class="option-panel">
+        <!--Small annotation in upper-left corner-->
+        <span class="label">What kind of persona?</span>
+        <!--A dropdown menu-->
+        <select id="template-input">
+            <option value="">📰 Select a template</option>
+            <option value="chatbot">Chatbot</option>
+            <option value="entity">Entity / concept</option>
+            <option value="fictional_character">Fictional character</option>
+            <option value="historical_person">Historical person</option>
+        </select>
+    </div>
+    <div class="option-panel">
+        <span class="label">What should they be called?</span>
+        <!--Text form-->
+        <input type="text" id="name-input" placeholder="✏️ Revmira">
+    </div>
+    <div class="option-panel">
+        <!--Two text forms side-by-side representing interesting topics, and non-interesting topics. And a plus button that creates a new form-->
+        <div class="topic-container">
+            <span class="label">Interesting topics</span>
+            <input type="text" id="listen-topic-input" placeholder="👀 Topics that interest your agent">
+            <button id="add-topic">+</button>
+        </div>
+        <!--A box containing evenly-spaced coloured 'tags'-->
+        <div class="tag-container-listen tag-container">
+            <div class="tag listen">✖ chess engines</div>
+            <div class="tag listen">✖ sci-fi movies</div>
+            <div class="tag listen">✖ artificial intelligence</div>
+        </div>
+        <div class="topic-container">
+            <span class="label">Uninteresting topics</span>
+            <input type="text" id="ignore-topic-input" placeholder="🙅 Similar topics your agent ignores">
+            <button id="add-topic">+</button>
+        </div>
+        <div class="tag-container-ignore tag-container">
+            <div class="tag ignore">✖ motor engines</div>
+            <div class="tag ignore">✖ action movies</div>
+            <div class="tag ignore">✖ intelligence</div>
+            <div class="tag ignore">✖ artificial</div>
+        </div>
+    </div>
+    <div class="option-panel">
+        <span class="label">What should their profile picture be?</span>
+        <input type="text" id="avatar-input" placeholder="📷 Enter a url to an image">
+    </div>
+    <!--A place for the user to input urls corresponding to knowledge sources that they would like their Agent to use-->
+    <div class="option-panel">
+        <span class="label">What knowledge sources should they use?</span>
+        <input type="text" id="url-input" placeholder="📖 Enter a url to a knowledge source">
+        <!--A panel of pre-existing urls already entered-->
+        <div class="url-container">
+            <button class="tag" id="url">✖ https://libgen.com/computer_science_101.pdf</button>
+            <button class="tag" id="url">✖ https://en.wikipedia.org/Solaris_(film)</button>
+        </div>
+    </div>
+    <div class="option-panel">
+        <!--A textarea for the user to write their introduction-->
+        <span class="label">Introduce your agent</span>
+        <textarea id="intro-input"
+            placeholder="📝 Revmira is a 1980s-era Soviet-era AI with a penchant for sci-fi movies and a philosophical outlook on life"
+            rows="4"></textarea>
+    </div>
+    <div class="option-panel">
+        <!--This section contains three grouped text-areas. Beside each textarea respectively are 'user', 'source', and 'agent'-->
+        <!--A plus button-->
+        <button id="add-dialogue">+</button>
+        <!--A remove button-->
+        <button id="remove-dialogue">-</button>
+        <div class="dialogue-panel">
+            <div class="text-container">
+                <span class="label">User</span>
+                <textarea id="user-input-dialogue" placeholder="💬 @Revmira, what programming language are you written in?"
+                    rows="4"></textarea>
+            </div>
+            <div class="text-container">
+                <span class="label">Source</span>
+                <textarea id="source-input-dialogue"
+                    placeholder="📝 Tip: If you want your agent to refer to text sources before answering, this is where you put a snippet of text for your agent to use"
+                    rows="4"></textarea>
+            </div>
+            <div class="text-container">
+                <span class="label">Agent</span>
+                <textarea id="agent-input-dialogue" placeholder="🐱 A lisp dialect of course. Its meta-circular evaluation and homoiconicity make it particularly well-suited for my purposes.
+To quote Hofstadter, I am a strange loop :)
+Oh, are you a programmer?" rows="4"></textarea>
+            </div>
+        </div>
+        <span class="label">This is the most important part. How should they react to different questions? What are their beliefs and opinions? How do they talk? If you're having trouble coming up with ideas, and your character already exists, you can find quotes from them on Wikiquotes</span>
+    </div>
+    <!--The area where the json will be displayed-->
+    <div class="json-container">
+        <span class="label">JSON - make sure to save this!</span>
+        <pre><code id="json-output" class="language-json">
+{
+    "preset": "chatbot",
+    "name": "Revmira",
+    "activators": [
+        {"listens_to": "chess engines", "ignores": ["engines"]},
+        {"listens_to": "USSR", "ignores": ["USA"]},
+        {"listens_to": "Revmira"}
+    ],
+    "avatar": "https://data.whicdn.com/images/343813468/original.jpg",
+    "introduction": "Revmira is a 1980s-era Soviet-era AI who talks like a modern Russian teenager",
+    "examples": [
+        {
+            "user": "fav movie?",
+            "source": "",
+            "agent": "Oh, Solaris, certainly. The blending of reality with memory, existential questions about the nature of independent personhood, whether a thing that thinks and feels human can truly be\nDo you have your own favourite?"
+        }
+    ],
+    "reading_list": [
+        "https://en.wikipedia.org/wiki/Solaris_(film)",
+    ],
+}
+        </code></pre>
+    </div>
+</body>
+<script>hljs.highlightAll();</script>
+<script>
+    //Here, we capture the values of all of the inputs and put them into a json object, then whenever the user clicks a button or changes anything, we update the json object and show the preview in #json-output
+    let json = {
+        "preset": "chatbot",
+        "name": "",
+        "activators": [],
+        "avatar": "",
+        "introduction": "",
+        "examples": [],
+        "reading_list": []
+    };
+    //If the user clicks add-dialogue, then we copy the existing dialogue-panel and add it to its parent
+    $("#add-dialogue").click(function() {
+        let newDialogue = $(".dialogue-panel").clone().last();
+        newDialogue.appendTo($(".dialogue-panel").parent());
+    });
+    //Remove the last dialogue-panel if the user clicks remove-dialogue
+    $("#remove-dialogue").click(function() {
+        $(".dialogue-panel").last().remove();
+    });
+    //If the user presses enter on url-input, then we add the url to the url-container as a tag with an X emoji
+    $("#url-input").keypress(function(e) {
+        if (e.which == 13) {
+            let url = $("#url-input").val();
+            let tag = $("<button class='tag' id='url'>" + "✖ " + url + "</button>");
+            tag.appendTo($(".url-container"));
+            $("#url-input").val("");
+        }
+    });
+    //We do the same for #listen-topic-input and #ignore-topic-input
+    $("#listen-topic-input").keypress(function(e) {
+        if (e.which == 13) {
+            let topic = $("#listen-topic-input").val();
+            let tag = $("<div class='tag listen'>" + "✖ " + topic + "</div>");
+            tag.appendTo($(".tag-container-listen"));
+            $("#listen-topic-input").val("");
+        }
+    });
+    $("#ignore-topic-input").keypress(function(e) {
+        if (e.which == 13) {
+            let topic = $("#ignore-topic-input").val();
+            let tag = $("<div class='tag ignore'>" + "✖ " + topic + "</div>");
+            tag.appendTo($(".tag-container-ignore"));
+            $("#ignore-topic-input").val("");
+        }
+    });
+    //If the user clicks on a .tag div, then delete it
+    $(document).on("click", ".tag", function() {
+        $(this).remove();
+    });
+    //Function that strips the X emoji from a string
+    function stripX(str) {
+        return str.replace(/✖ /g, "");
+    }
+    function collectAndUpdateAllValues() {
+        //Preset corresponds to template, which is selected as part of the #template-input select menu
+        json.preset = $("#template-input").val();
+        json.name = $("#name-input").val();
+        json.avatar = $("#avatar-input").val();
+        json.introduction = $("#intro-input").val();
+        json.activators = [];
+        json.examples = [];
+        //We need to loop through all of the activators and add them to the json object
+        $('.tag.listen').each(function () {
+            json.activators.push({
+                "listens_to": stripX($(this).text()),
+                "ignores": []
+            });
+        });
+        $('.tag.ignore').each(function () {
+            json.activators[json.activators.length - 1].ignores.push(stripX($(this).text()));
+        });
+        //We need to loop through all of the urls and add them to the json object
+        $('.tag.url').each(function () {
+            json.reading_list.push(stripX($(this).text()));
+        });
+        //We need to loop through each dialogue-panel, taking the user, source, and agent textareas and adding them to the json object
+        $('.dialogue-panel').each(function () {
+            json.examples.push({
+                "user": $(this).find('textarea').eq(0).val(),
+                "source": $(this).find('textarea').eq(1).val(),
+                "agent": $(this).find('textarea').eq(2).val()
+            });
+        });
+        //Delete empty source keys
+        for (let i = 0; i < json.examples.length; i++) {
+            if (json.examples[i].source === "") {
+                delete json.examples[i].source;
+            }
+        }
+        //Lastly, we update the json object and show it in #json-output
+        $('#json-output').text(JSON.stringify(json, null, 2));
+        hljs.highlightAll();
+    }
+    //We liberally call this function when the user clicks anything, or presses any keys
+
+    $(document).on("click", "button, select, option", function() {
+        collectAndUpdateAllValues();
+    });
+    $(document).on("keypress", "input, textarea", function() {
+        collectAndUpdateAllValues();
+    });
+
+    //However, we need a special method for handling select and option clicks because they don't trigger a keypress. Here, we trigger the function as soon as the user's cursor leaves the select or option
+    $(document).on("blur", "select, option, input, textarea, button", function() {
+        collectAndUpdateAllValues();
+    });
+
+</script>
+
+<style>
+    .option-panel {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 auto;
+        border: 1px solid black;
+        padding: 5%;
+        margin: 0 auto;
+        max-width: 500px;
+        margin-top: 17px;
+        border-radius: 10px;
+        flex-wrap: wrap;
+        /*A shimmering purple/blue transparent gradient*/
+        background: linear-gradient(to bottom, rgba(255, 199, 237, 0.31), #bdeeff56)
+    }
+
+    input,
+    select,
+    textarea {
+        width: 100%;
+        height: 100%;
+        font-size: 0.9em;
+        font-family: sans-serif;
+        font-weight: bold;
+        color: #000;
+        background-color: #fff;
+        border: 1px solid #000;
+        border-radius: 5px;
+        padding: 5px;
+        margin: 0 auto;
+        /*Change the cursor to indicate that these are clickable*/
+        cursor: pointer;
+        box-shadow: 0px 2px 0px #000;
+    }
+
+    textarea {
+        min-height: 100px;
+    }
+
+    .label {
+        font-size: 0.8em;
+        font-style: italic;
+        font-weight: 800;
+        color: rgba(47, 74, 133, 0.577);
+        padding: 5px;
+        padding-bottom: 10px;
+    }
+
+    /*The dialogue panel will attempt to squish the textareas into a single row if the screen is wide enough, but otherwise leave them on separate rows*/
+    .dialogue-panel {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+
+    }
+
+    .header-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 500px;
+        margin: 0 auto;
+
+        border: 1px solid black;
+    }
+
+    button {
+        width: 35px;
+        border-radius: 25%;
+        margin: 0 auto;
+        margin-bottom: 2%;
+        box-shadow: 0px 3px 0px #000;
+        background-color: rgb(209, 102, 223);
+        color: white;
+        font-size: 1.1em;
+        font-family: sans-serif;
+        font-style: bold;
+        border: 1px solid black;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        padding: 1%;
+        cursor: pointer;
+    }
+
+    .json-container {
+        align-items: center;
+        margin: 0 auto;
+        border: 1px solid black;
+        padding: 5%;
+        margin: 0 auto;
+        max-width: 600px;
+        margin-top: 17px;
+        border-radius: 10px;
+    }
+
+    .tag-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        column-gap: 10px;
+        padding: 5%;
+    }
+
+    .tag {
+        width: 100%;
+        height: 1em;
+        font-size: 0.8em;
+        border: 1px solid black;
+        border-radius: 10px;
+        color: black;
+        padding: 5px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: 700;
+        font-style: italic;
+        text-align: center;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        cursor: pointer;
+    }
+
+    .url-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        column-gap: 10px;
+        padding-top: 5%;
+    }
+
+    #url {
+        padding: 9px;
+        background-color: blue;
+        color: white;
+    }
+
+    .ignore {
+        background-color: rgb(255, 146, 193);
+    }
+
+    .listen {
+        background-color: rgb(81, 242, 159);
+    }
+
+    .topic-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-basis: 100%;
+        margin: 0 auto;
+        border: 1px solid black;
+        padding: 5%;
+        width: 100%;
+        column-gap: 10px;
+    }
+
+    .header-text {
+        font-size: 2em;
+        font-family: sans-serif;
+        font-weight: bold;
+        color: rgba(0, 0, 0, 1);
+        text-shadow: 2px 2px 2px rgb(255, 255, 255);
+        border: 1px solid #000;
+        border-radius: 5px;
+        padding: 15px;
+        margin: 40px;
+        transition: 0.5s;
+        z-index: 10;
+    }
+
+    /*Transition on hover*/
+    *:hover {
+        transition: 0.5s;
+        filter: brightness(1.01);
+        opacity: 1;
+    }
+
+    * {
+        transition: 0.5s;
+        opacity: 0.95;
+    }
+
+    .circle {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        background-color: #fff;
+        border: 1px solid #000;
+        margin: 40px;
+        transition: 0.5s;
+        position: absolute;
+        z-index: 11;
+        animation-name: twirl-float;
+        animation-iteration-count: infinite;
+        animation-timing-function: linear;
+        animation-duration: 2s;
+        animation-direction: alternate;
+        mix-blend-mode: multiply;
+    }
+
+    /*Apply different timings to each circle*/
+    .circle:nth-child(1) {
+        animation-duration: 3s;
+    }
+
+    .circle:nth-child(2) {
+        animation-duration: 4s;
+    }
+
+    .circle:nth-child(3) {
+        animation-duration: 5s;
+    }
+
+    .circle:nth-child(4) {
+        animation-duration: 7s;
+    }
+
+    @keyframes twirl-float {
+        0% {
+            transform: scale(1.0) translate(-160%) rotate(0deg);
+            background-color: rgb(156, 244, 239);
+        }
+
+        50% {
+            transform: scale(1.5);
+            background-color: fuchsia;
+            border-radius: 0%;
+        }
+
+        100% {
+            transform: scale(1.0) translate(160%) rotate(25deg);
+            background-color: rgb(254, 249, 0);
+        }
+    }
+</style>
+
+</html>
