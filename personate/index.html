@@ -214,7 +214,7 @@ Oh, are you a programmer?" rows="4"></textarea>
             json.activators[json.activators.length - 1].ignores.push(stripX($(this).text()));
         });
         //We need to loop through all of the urls and add them to the json object
-        $('.tag.url').each(function () {
+        $('.tag#url').each(function () {
             json.reading_list.push(stripX($(this).text()));
         });
         //We need to loop through each dialogue-panel, taking the user, source, and agent textareas and adding them to the json object
