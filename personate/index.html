@@ -143,15 +143,6 @@ Oh, are you a programmer?" rows="4"></textarea>
 <script>hljs.highlightAll();</script>
 <script>
     //Here, we capture the values of all of the inputs and put them into a json object, then whenever the user clicks a button or changes anything, we update the json object and show the preview in #json-output
-    let json = {
-        "preset": "chatbot",
-        "name": "",
-        "activators": [],
-        "avatar": "",
-        "introduction": "",
-        "examples": [],
-        "reading_list": []
-    };
     //If the user clicks add-dialogue, then we copy the existing dialogue-panel and add it to its parent
     $("#add-dialogue").click(function() {
         let newDialogue = $(".dialogue-panel").clone().last();
@@ -196,6 +187,15 @@ Oh, are you a programmer?" rows="4"></textarea>
         return str.replace(/✖ /g, "");
     }
     function collectAndUpdateAllValues() {
+        let json = {
+            "preset": "chatbot",
+            "name": "",
+            "activators": [],
+            "avatar": "",
+            "introduction": "",
+            "examples": [],
+            "reading_list": []
+        };
         //Preset corresponds to template, which is selected as part of the #template-input select menu
         json.preset = $("#template-input").val();
         json.name = $("#name-input").val();
